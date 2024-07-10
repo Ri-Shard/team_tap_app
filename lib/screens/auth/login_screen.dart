@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:quickalert/quickalert.dart';
 import 'package:team_tap_app/my_theme.dart';
 import 'package:team_tap_app/resources/buttons.dart';
 import 'package:team_tap_app/resources/custom_text.dart';
@@ -62,6 +63,16 @@ class _LoginScreenState extends State<LoginScreen> {
                       hint: 'Email',
                       inputType: TextInputType.emailAddress,
                       controller: emailcontroller,
+                      validator: (p0) {
+                        if (p0!.isEmpty) {
+                          return 'Campo vacio, ingrese un correo';
+                        }
+                        if (p0 != null) {
+                          if (!GetUtils.isEmail(p0.trim())) {
+                            return 'Correo no valido';
+                          }
+                        }
+                      },
                     ),
                   ),
                   SizedBox(
@@ -73,6 +84,11 @@ class _LoginScreenState extends State<LoginScreen> {
                       hint: 'Contraseña',
                       obscureText: true,
                       controller: passwordcontroller,
+                      validator: (p0) {
+                        if (p0!.isEmpty) {
+                          return 'Campo vacio, ingrese una contraseña valida';
+                        }
+                      },
                     ),
                   ),
                   SizedBox(
@@ -87,10 +103,23 @@ class _LoginScreenState extends State<LoginScreen> {
                         style: TextStyle(color: Colors.white),
                       ),
                       color: MyTheme.brown,
-                      ontap: () {
-                        authController.Login(
-                            emailcontroller.text, passwordcontroller.text);
-                        Get.offAllNamed('/layout');
+                      ontap: () async {
+                        if (_key.currentState!.validate()) {
+                          final response = await authController.Login(
+                              emailcontroller.text, passwordcontroller.text);
+
+                          if (response == 'Bienvenido') {
+                            Get.offAllNamed('/layout');
+                          } else {
+                            QuickAlert.show(
+                              context: context,
+                              type: QuickAlertType.error,
+                              text: 'Error al ingresar',
+                              autoCloseDuration: const Duration(seconds: 2),
+                              showConfirmBtn: false,
+                            );
+                          }
+                        }
                       },
                     ),
                   )

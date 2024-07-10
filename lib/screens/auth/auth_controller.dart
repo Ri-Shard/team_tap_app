@@ -12,7 +12,7 @@ class AuthController extends GetxController {
   void onReady() {
     // TODO: implement onReady
     super.onReady();
-    verifyUser();
+    Future.delayed(Duration(seconds: 1)).whenComplete(() => verifyUser());
   }
 
   final supabase = Supabase.instance.client;
@@ -26,7 +26,14 @@ class AuthController extends GetxController {
       );
       session = res.session;
       user = res.user;
-    } catch (e) {}
+      print(res);
+
+      return 'Bienvenido';
+    } catch (e) {
+      print(e.toString());
+
+      return 'Credenciales Erroneas';
+    }
   }
 
   SignOut() async {

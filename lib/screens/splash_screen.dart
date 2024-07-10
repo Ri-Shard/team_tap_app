@@ -9,6 +9,7 @@ class SplashScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final authController = Get.find<AuthController>();
+
     return GetBuilder(
         id: 'splashView',
         init: authController,
