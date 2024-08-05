@@ -4,13 +4,11 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class AuthController extends GetxController {
   @override
   void onInit() {
-    // TODO: implement onInit
     super.onInit();
   }
 
   @override
   void onReady() {
-    // TODO: implement onReady
     super.onReady();
     Future.delayed(Duration(seconds: 1)).whenComplete(() => verifyUser());
   }

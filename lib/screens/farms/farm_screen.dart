@@ -29,11 +29,16 @@ class _FarmsScreenState extends State<FarmsScreen> {
           style: TextStyle(fontFamily: 'Qanelas', fontWeight: FontWeight.bold),
         ),
         actions: [
-          CircleAvatar(
-            backgroundColor: MyTheme.brown,
-            child: Icon(
-              Icons.person_4_outlined,
-              color: Colors.white,
+          InkWell(
+            onTap: () {
+              Get.toNamed('/registerw');
+            },
+            child: CircleAvatar(
+              backgroundColor: MyTheme.brown,
+              child: Icon(
+                Icons.add,
+                color: Colors.white,
+              ),
             ),
           ),
           SizedBox(
@@ -46,26 +51,11 @@ class _FarmsScreenState extends State<FarmsScreen> {
           SizedBox(
             height: 20,
           ),
-          Center(
-            child: Container(
-              width: 300,
-              height: 50,
-              child: Buttons(
-                content: Text(
-                  'Agregar trabajador',
-                  style: TextStyle(color: Colors.white),
-                ),
-                color: MyTheme.brown,
-                ontap: () {
-                  Get.toNamed('/registerw');
-                },
-              ),
-            ),
-          ),
           Divider(
-            thickness: 1,
+            thickness: 0.1,
             color: MyTheme.brown,
           ),
+          Text('Seleccione un trabajador para realizar la entrega de cafe'),
           GetBuilder(
               id: 'listwView',
               init: farmController,
@@ -77,10 +67,16 @@ class _FarmsScreenState extends State<FarmsScreen> {
                     itemBuilder: (BuildContext context, int index) {
                       return ListTile(
                         title: Text(
-                            farmController.bdData[index]!.firstname.toString()),
-                        subtitle: Text('cedula'),
-                        onTap: () {},
-                        splashColor: const Color.fromARGB(255, 83, 70, 60),
+                            '${farmController.bdData[index]!.firstname.toString()} ${farmController.bdData[index]!.lastname.toString()}'),
+                        subtitle: Text(
+                            '${farmController.bdData[index]!.typeid.toString()} ${farmController.bdData[index]!.idWorker.toString()}'),
+                        onTap: () {
+                          Get.toNamed('/collect', arguments: [
+                            farmController.bdData[index]!.idWorker.toString(),
+                            farmController.bdData[index]!.firstname.toString()
+                          ]);
+                        },
+                        splashColor: Colors.brown[200],
                       );
                     },
                   ),

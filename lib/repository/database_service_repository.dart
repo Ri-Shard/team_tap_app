@@ -1,4 +1,8 @@
+import 'dart:io';
+
 import 'package:supabase_flutter/supabase_flutter.dart' as supa;
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:team_tap_app/models/collect_model.dart';
 import 'package:team_tap_app/models/worker_model.dart';
 
 class DataBaseServiceRepository {
@@ -35,6 +39,43 @@ class DataBaseServiceRepository {
       });
     } catch (e) {
       return [];
+    }
+  }
+
+  Future<String> saveCollect(CollectModel collect) async {
+    try {
+      collect.dateCreated = DateTime.now().toString();
+      await Future.delayed(const Duration(milliseconds: 500));
+      await supabase.from('collects').insert(collect.toJson());
+      return 'Guardado Correctamente';
+    } catch (e) {
+      return '-1';
+    }
+  }
+
+  Future<String> saveImage(File image) async {
+    final now = DateTime.now();
+    final path = 'public/${now}';
+    final String fullPath = await supabase.storage.from('images').upload(
+          path,
+          image,
+          fileOptions: const FileOptions(cacheControl: '3600', upsert: false),
+        );
+    final response = await supabase.storage.from('images').getPublicUrl(path);
+    return response;
+  }
+
+  Stream<List<CollectModel?>> getCollects() async* {
+    try {
+      yield await supabase.from('collects').select().then((data) {
+        List<CollectModel?> collects = [];
+        data.forEach((element) {
+          collects.add(CollectModel.fromJson(element));
+        });
+        return collects;
+      });
+    } catch (e) {
+      yield [];
     }
   }
 }
